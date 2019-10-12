@@ -6,3 +6,5 @@ COPY . .
 RUN go build -o bin/app
 
 CMD ["/webapp/bin/app"]
+
+EXPOSE 8080
