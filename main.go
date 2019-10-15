@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/MateuszPu/go-web-app-starter/config"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
@@ -9,7 +10,8 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", hello)
+	mux.HandleFunc("/", config.LoggerHandler(hello()).ServeHTTP)
+
 
 	server := &http.Server{
 		Addr:         ":8080",
@@ -19,13 +21,18 @@ func main() {
 		IdleTimeout:  120 * time.Second,
 	}
 
+
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal("Server startup failed")
 	}
 
+
+
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
-	value := r.URL.Query().Get("value")
-	fmt.Fprintf(w, "Hello %s!", value)
+func hello() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		value := r.URL.Query().Get("value")
+		fmt.Fprintf(w, "Hello %s!", value)
+	})
 }
