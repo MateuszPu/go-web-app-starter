@@ -17,7 +17,7 @@ func init() {
 func LoggerHandler(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		start := time.Now()
-		defer log.Infof("Request method: [%s], request url: [%s], latency: [%.2f]", request.Method,  request.URL.String(), time.Since(start).Milliseconds())
 		inner.ServeHTTP(response, request)
+		log.Infof("Request method: [%s], request url: [%s], latency: [%.2f]", request.Method,  request.URL.String(), time.Since(start).Milliseconds())
 	})
 }
