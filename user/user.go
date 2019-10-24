@@ -1,7 +1,7 @@
 package user
 
 import (
-	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
@@ -12,11 +12,11 @@ type User struct {
 	Age       int    `json:"age"`
 }
 
-func Get() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Query().Get("name")
-		lastName := r.URL.Query().Get("lastName")
-		age, _ := strconv.Atoi(r.URL.Query().Get("age"))
-		json.NewEncoder(w).Encode(User{name, lastName, age})
-	})
+func Get() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		name := context.Query("name")
+		lastName := context.Query("lastName")
+		age, _ := strconv.Atoi(context.DefaultQuery("age", "0"))
+		context.JSON(http.StatusOK, User{name, lastName, age})
+	}
 }
